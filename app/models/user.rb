@@ -12,8 +12,8 @@ class User < ActiveRecord::Base
 	attr_accessor :remember_token
 
 	def authenticated?(remember_token)
-		return false if remember_digest.nil?
-		BCript:Password.new(remember_digest).is_password?(remember_token)
+		#return false if remember_digest.nil?
+		BCrypt::Password.new(remember_digest).is_password?(remember_token)
 	end
 
 	def User.digest(string)
@@ -34,3 +34,4 @@ class User < ActiveRecord::Base
 		update_attribute(:remember_digest, nil)
 	end
 end
+

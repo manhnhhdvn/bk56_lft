@@ -1,0 +1,154 @@
+
+<h1><span class="glyphicon glyphicon-question-sign"></span> <%= @question.title %> </h1>
+
+<% if signed_in? %>
+
+<% if current_user.id == @question.user_id %>
+	<a class="btn edit-link" href="/questions/<%= @question.id %>/edit">編集</a>
+	<a class="btn delete-link" data-confirm="Are you sure?" data-method="delete" href="/questions/<%= @question.id %>" rel="nofollow">削除</a>	
+<% end %>
+<% end %>
+
+<p id="notice"><%= notice %></p>
+
+
+<div >
+        <div id="question">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="votecell">
+                            <div class="vote">
+				<a class="vote-link" data-method="put" href="/questions/<%= @question.id.to_s %>/upvote" >
+																<span class="vote-up glyphicon glyphicon-circle-arrow-up"></span>
+														</a>
+                 <% @votes_q = Vote.where(votable_id: @question.id, votable_type: "Question", vote_flag: 1) %>
+                                    <span class="vote-count"><%= @votes_q.count %></span>
+					<a class="vote-link" data-method="put" href="/questions/<%= @question.id.to_s %>/downvote" >
+																<span class="vote-down glyphicon glyphicon-circle-arrow-down"></span>
+														</a>
+                            </div>
+                        </td>
+                        <td class="postcell">
+                            <div class="post-content">
+                                <p>
+									  <%= @question.content %>                               
+				  				 </p>
+                            </div>
+                            <div class="tags">
+																<%=raw tag_links(@question.all_tags)%>
+                            </div>
+                            <table>
+                                <tbody>
+                                <tr>
+                                    <td align="left"></td>
+                                    <td align="right">                                    
+                                        <div class="user-info">
+                                            <div class="user-info-detail">
+                                                <div class="user-info-name">
+                                                    <a href="<%= "/users/" + @user.id.to_s%>"><%= @user.username %></a>
+                                                </div>
+                                                <div class="user-info-pic">
+                                                    <span class="glyphicon glyphicon-user">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br><br>
+        <div id="answers">
+            <div id="answers-header">
+            
+                 <h3><span class="glyphicon glyphicon-hand-down"></span>アンサー</h3>
+
+            </div>
+            <hr>
+
+
+			    <% @answers.each do |answer| %>            
+            <div class="answer">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td class="votecell">
+                    			 <div class="vote">
+														<a class="vote-link" data-method="put" 
+														href="/questions/<%= @question.id.to_s %>/answers/<%= answer.id.to_s %>/upvote" >
+																<span class="vote-up glyphicon glyphicon-circle-arrow-up"></span>
+														</a>
+
+                 <% @votes_a = Vote.where(votable_id: answer.id, votable_type: "Answer", vote_flag: 1) %>
+                                    <span class="vote-count"><%= @votes_a.count %></span>
+														<a class="vote-link" data-method="put" 
+													href="/questions/<%= @question.id.to_s %>/answers/<%= answer.id.to_s %>/downvote" >
+																<span class="vote-down glyphicon glyphicon-circle-arrow-down"></span>
+														</a>
+                            </div>
+                        </td>
+                        <td class="postcell">
+                            <div class="post-content">
+                                <p>
+                                   <%= answer.description %>
+                                </p>
+                            </div>
+                            <table>
+                                <tbody>
+                                <tr>
+                                    <td align="left"></td>
+                                    <td align="right">
+                                        <div class="user-info">
+                                            <div class="user-info-time">
+                                                <p>                                             <% if signed_in? %>
+		      <% if current_user.id == answer.user_id  %>
+						<td>	<%= link_to 'Edit', '/questions/'+@question.id.to_s+'/answers/'+answer.id.to_s+'/edit',class:"btn" %>        		</td>
+			      <td><%= link_to 'Destroy', answer, method: :delete, data: { confirm: 'Are you sure?' },class:"btn" %>
+			      </td>
+		      <% end %>        
+       <% end %>  
+</p>
+                                            </div>
+                                            <div class="user-info-detail">
+                                                <div class="user-info-name">
+                                                    <a href="/users/<%= answer.user_id %>"><%= User.find(answer.user_id).username %></a>
+                                                </div>
+                                                <div class="user-info-pic">
+                                                    <span class="glyphicon glyphicon-user">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <hr>
+            <% end %>
+        </div>
+        
+          
+<% if signed_in? %>
+
+	<%= form_for([@question,@answer]) do |f| %>
+		<div class="field">
+		  <textarea id="answer_description" class="form-control" name="answer[description]"></textarea>
+		</div>
+		<div class="actions">
+		  <input name="commit" value="アンサー" type="submit">
+		</div>
+	<% end %>
+<% end %>
+        
+    </div>
+    
+   

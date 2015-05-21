@@ -1,5 +1,6 @@
 class StaticPagesController < ApplicationController
-  def home
+  def home  	
+  	redirect_to '/questions'
   end
 
   def help

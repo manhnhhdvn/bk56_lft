@@ -11,7 +11,51 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150205171810) do
+ActiveRecord::Schema.define(version: 20150516181621) do
+
+  create_table "answers", force: true do |t|
+    t.integer  "question_id"
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "user_id"
+  end
+
+  add_index "answers", ["question_id"], name: "index_answers_on_question_id", using: :btree
+
+  create_table "categories", force: true do |t|
+    t.string   "CategoryName"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "questions", force: true do |t|
+    t.string   "title"
+    t.text     "content"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "category_id"
+  end
+
+  add_index "questions", ["user_id"], name: "index_questions_on_user_id", using: :btree
+
+  create_table "taggings", force: true do |t|
+    t.integer  "question_id"
+    t.integer  "tag_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "taggings", ["question_id"], name: "index_taggings_on_question_id", using: :btree
+  add_index "taggings", ["tag_id"], name: "index_taggings_on_tag_id", using: :btree
+
+  create_table "tags", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "username"
@@ -21,5 +65,20 @@ ActiveRecord::Schema.define(version: 20150205171810) do
     t.string   "password_digest"
     t.string   "remember_digest"
   end
+
+  create_table "votes", force: true do |t|
+    t.integer  "votable_id"
+    t.string   "votable_type"
+    t.integer  "voter_id"
+    t.string   "voter_type"
+    t.boolean  "vote_flag"
+    t.string   "vote_scope"
+    t.integer  "vote_weight"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "votes", ["votable_id", "votable_type", "vote_scope"], name: "index_votes_on_votable_id_and_votable_type_and_vote_scope", using: :btree
+  add_index "votes", ["voter_id", "voter_type", "vote_scope"], name: "index_votes_on_voter_id_and_voter_type_and_vote_scope", using: :btree
 
 end
